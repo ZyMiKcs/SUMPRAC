@@ -19,16 +19,13 @@ int main(int argc, const char *argv[]) {
     fifo::internal::FifoRaw<DataType, SizeType, len> commands;
     fifo::internal::FifoRaw<DataType, SizeType, len> result;
 
-    // queue<char> commands; // Очередь для команд
-    // queue<char> result; // Очередь для результата
-
     int currentChecksum = 0;  // Значение контрольной суммы текущего пакета
     int checksum = 0;  // Контрольное значение пакета, которое было указано заранее
 
     for (int i = 1; i < argc; ++i) {
         const char *p = argv[i];
         while (*p) commands.push(*p++);
-        
+
         while (!commands.empty()) {
             // auto ch = commands.pop();
             if (commands.front() == '$') {  // Видим, что начался пакет
@@ -99,22 +96,22 @@ void startCommand(int command) {
     cout << "Выполняю команду: ";
     switch (command) {
         case 1:
-            cout << "Смена TMS" << endl; 
+            cout << "Смена TMS" << endl;
             break;
-        case 2: 
-            cout << "STABLE_CLOCKS" << endl; 
+        case 2:
+            cout << "STABLE_CLOCKS" << endl;
             break;
-        case 3: 
-            cout << "TLR_RESET" << endl; 
+        case 3:
+            cout << "TLR_RESET" << endl;
             break;
-        case 4: 
-            cout << "SCAN_IR" << endl; 
+        case 4:
+            cout << "SCAN_IR" << endl;
             break;
-        case 5: 
-            cout << "SCAN_DR" << endl; 
+        case 5:
+            cout << "SCAN_DR" << endl;
             break;
-        case 6: 
-            cout << "SLEEP" << endl; 
+        case 6:
+            cout << "SLEEP" << endl;
             break;
     }
 }
