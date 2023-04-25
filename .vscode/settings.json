@@ -4,6 +4,14 @@
     "cstdint": "cpp",
     "concepts": "cpp",
     "utility": "cpp",
-    "limits": "cpp"
+    "limits": "cpp",
+    "array": "cpp",
+    "deque": "cpp",
+    "vector": "cpp",
+    "string_view": "cpp",
+    "ranges": "cpp",
+    "*.tcc": "cpp",
+    "string": "cpp",
+    "ostream": "cpp"
   }
 }

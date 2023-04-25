@@ -12,11 +12,11 @@ int charToInt(char ch, bool x16); // Перевод шестнадцатерич
 int main()
 {
     constexpr std::uint8_t len = 128;
-    fifo::internal::FifoRaw<std::unique_ptr<std::uint16_t>, std::uint8_t, len>
-        commands;
+    using DataType = char;
+    using SizeType = uint8_t;
 
-    fifo::internal::FifoRaw<std::unique_ptr<std::uint16_t>, std::uint8_t, len>
-        result;
+    fifo::internal::FifoRaw<DataType, SizeType, len> commands;
+    fifo::internal::FifoRaw<DataType, SizeType, len> result;
 
     // queue<char> commands; // Очередь для команд
     // queue<char> result; // Очередь для результата
@@ -35,7 +35,15 @@ int main()
     commands.pushSafe('#');
     commands.pushSafe('9');
     commands.pushSafe('6');
-
+    // cout << commands.front() << endl;
+    // commands.popSafe();
+    // cout << commands.front() << endl;
+    // commands.popSafe();
+    // cout << commands.front() << endl;
+    // commands.popSafe();
+    // cout << commands.front() << endl;
+    // commands.popSafe();
+    // cout << commands.empty() << endl;
     // Основной цикл
     while (!commands.empty())
     {
