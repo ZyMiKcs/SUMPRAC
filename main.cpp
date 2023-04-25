@@ -9,6 +9,7 @@ using namespace std;
 
 int isCommand(char ch);  // Проверка на валидность команды пакета
 int charToInt(char ch, bool x16);  // Перевод шестнадцатеричного числа, записанного в char, в int
+void startCommand(int command);
 
 int main(int argc, const char *argv[]) {
     constexpr std::uint8_t len = 128;
@@ -27,29 +28,9 @@ int main(int argc, const char *argv[]) {
     for (int i = 1; i < argc; ++i) {
         const char *p = argv[i];
         while (*p) commands.push(*p++);
-        // Инициализация пакета
-        // commands.pushSafe('d');
-        // commands.pushSafe('#');
-        // commands.pushSafe('$');
-        // commands.pushSafe('d');
-        // commands.pushSafe('$');
-        // commands.pushSafe('d');
-        // commands.pushSafe('2');
-        // commands.pushSafe('#');
-        // commands.pushSafe('9');
-        // commands.pushSafe('y');
-        // cout << commands.front() << endl;
-        // commands.popSafe();
-        // cout << commands.front() << endl;
-        // commands.popSafe();
-        // cout << commands.front() << endl;
-        // commands.popSafe();
-        // cout << commands.front() << endl;
-        // commands.popSafe();
-        // cout << commands.empty() << endl;
-        // Основной цикл
+        
         while (!commands.empty()) {
-            auto ch = commands.pop();
+            // auto ch = commands.pop();
             if (commands.front() == '$') {  // Видим, что начался пакет
                 commands.popSafe();         // Избавляемся от "$"
                 int command =
@@ -85,9 +66,9 @@ int main(int argc, const char *argv[]) {
                 commands.popSafe();
                 if (currentChecksum == checksum) {  // Проверка целостности пакета
                     cout << "Пакет считан исправно!" << endl;
+                    startCommand(command);
                 } else {
-                    cout << "Error: Пакет передан некорректно" << std::hex << checksum << " "
-                         << currentChecksum << endl;
+                    cout << "Error: Пакет передан некорректно" << endl;
                 }
             } else {
                 commands.popSafe();
@@ -112,6 +93,30 @@ int isCommand(char ch) {
     }
 
     return -1;
+}
+
+void startCommand(int command) {
+    cout << "Выполняю команду: ";
+    switch (command) {
+        case 1:
+            cout << "Смена TMS" << endl; 
+            break;
+        case 2: 
+            cout << "STABLE_CLOCKS" << endl; 
+            break;
+        case 3: 
+            cout << "TLR_RESET" << endl; 
+            break;
+        case 4: 
+            cout << "SCAN_IR" << endl; 
+            break;
+        case 5: 
+            cout << "SCAN_DR" << endl; 
+            break;
+        case 6: 
+            cout << "SLEEP" << endl; 
+            break;
+    }
 }
 
 int charToInt(char ch, bool x16) {

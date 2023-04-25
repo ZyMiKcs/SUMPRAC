@@ -1,7 +1,0 @@
-[
-{
-  "directory": "/home/vlad/summer_practice/SUMPRAC/build",
-  "command": "/usr/bin/g++   -std=c++2a -g -Wall -Wextra -Werror -o CMakeFiles/main.dir/main.cpp.o -c /home/vlad/summer_practice/SUMPRAC/main.cpp",
-  "file": "/home/vlad/summer_practice/SUMPRAC/main.cpp"
-}
-]

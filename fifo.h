@@ -24,7 +24,12 @@ namespace fifo
         public:
             FifoRaw(void) : head_(0), tail_(0) {}
             SizeType size(void) const { return tail_ - head_; }
-            SizeType front(void) const { return data_[head_]; }
+            SizeType front(void) const {
+                if (!isEmpty())
+                    return data_[head_];
+                else
+                    return 'n';
+            }
             bool isEmpty(void) const { return tail_ == head_; }
             bool empty(void) const { return isEmpty(); }
             bool isFull(void) const { return size() == N; }
