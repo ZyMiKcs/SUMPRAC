@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/mainko.dir/main.cpp.o -o mainko 

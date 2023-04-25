@@ -1,0 +1,3 @@
+/home/vlad/summer_practice/SUMPRAC/CMakeFiles/output.dir
+/home/vlad/summer_practice/SUMPRAC/CMakeFiles/edit_cache.dir
+/home/vlad/summer_practice/SUMPRAC/CMakeFiles/rebuild_cache.dir
