@@ -1,7 +1,0 @@
-[
-{
-  "directory": "/home/vlad/summer_practice/test/build",
-  "command": "/usr/bin/c++   -g -Wall -Wextra -Werror -o CMakeFiles/main.dir/main.cpp.o -c /home/vlad/summer_practice/test/main.cpp",
-  "file": "/home/vlad/summer_practice/test/main.cpp"
-}
-]

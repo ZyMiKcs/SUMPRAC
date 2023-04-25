@@ -1,3 +1,0 @@
-/home/vlad/summer_practice/test/build/CMakeFiles/main.dir
-/home/vlad/summer_practice/test/build/CMakeFiles/edit_cache.dir
-/home/vlad/summer_practice/test/build/CMakeFiles/rebuild_cache.dir

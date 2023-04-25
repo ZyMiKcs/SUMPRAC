@@ -1,4 +1,4 @@
-# Install script for directory: /home/kidala/Desktop/Practice/SUMPRAC
+# Install script for directory: /home/vlad/summer_practice/SUMPRAC
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -50,5 +50,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/kidala/Desktop/Practice/SUMPRAC/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/vlad/summer_practice/SUMPRAC/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

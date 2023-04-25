@@ -1,6 +1,6 @@
 CMakeFiles/main.dir/main.cpp.o: \
- /home/kidala/Desktop/Practice/SUMPRAC/main.cpp \
- /usr/include/stdc-predef.h /usr/include/c++/11/iostream \
+ /home/vlad/summer_practice/SUMPRAC/main.cpp /usr/include/stdc-predef.h \
+ /usr/include/c++/11/iostream \
  /usr/include/x86_64-linux-gnu/c++/11/bits/c++config.h \
  /usr/include/x86_64-linux-gnu/c++/11/bits/os_defines.h \
  /usr/include/features.h /usr/include/features-time64.h \
@@ -174,8 +174,8 @@ CMakeFiles/main.dir/main.cpp.o: \
  /usr/include/c++/11/vector /usr/include/c++/11/bits/stl_vector.h \
  /usr/include/c++/11/bits/stl_bvector.h \
  /usr/include/c++/11/bits/vector.tcc /usr/include/c++/11/bits/stl_queue.h \
- /home/kidala/Desktop/Practice/SUMPRAC/fifo.h \
- /usr/include/c++/11/algorithm /usr/include/c++/11/bits/ranges_algo.h \
+ /home/vlad/summer_practice/SUMPRAC/fifo.h /usr/include/c++/11/algorithm \
+ /usr/include/c++/11/bits/ranges_algo.h \
  /usr/include/c++/11/bits/ranges_algobase.h /usr/include/c++/11/iterator \
  /usr/include/c++/11/bits/stream_iterator.h \
  /usr/include/c++/11/bits/ranges_util.h \
