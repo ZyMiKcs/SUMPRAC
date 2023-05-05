@@ -9,6 +9,7 @@ using namespace std;
 
 int charToInt(char ch, bool x16);  // Перевод шестнадцатеричного числа, записанного в char, в int
 
+
 template <size_t Size>
 class PacketReader {
    public:
@@ -50,7 +51,12 @@ class PacketReader {
                 case ',':
                     checksum += ch;
                     if (state == State::size) {
-                        state = State::dataL;
+                        if (len != 0) {
+                            state = State::dataL;
+                        } else {
+                            cout << "Попытка передачи некорректного пакета" << endl;
+                            state = State::idle;
+                        }
                     }
                     break;
                 default:
@@ -87,6 +93,7 @@ class PacketReader {
                             break;
                         case State::dataH:
                             try {
+                                isArrEmpty = false;
                                 data[index] += charToInt(ch, true);
                                 state = State::dataL;
                                 index++;
@@ -105,10 +112,36 @@ class PacketReader {
                             }
                             break;
                         case State::checksum2:
+                            // if (len != index) {
+                            //     cout << "Попытка передачи некорректного пакета" << endl;
+                            //     state = State::idle;
+                            //     break;
+                            // }
+                            // char ch = '1';
+                            if (commandArgsCount(command) == 0 && len != 0) {
+                                cout << "Попытка передачи некорректного пакета (команда не должна иметь аргументы)" << endl;
+                                state = State::idle;
+                                break;
+                            }
+                            if (commandArgsCount(command) == 1 && !isArrEmpty) {
+                                cout << "Попытка передачи некорректного пакета (команда должна иметь один аргумент)" << endl;
+                                state = State::idle;
+                                break;
+                            }
+                            if (commandArgsCount(command) == 2 && (len == 0 || isArrEmpty)) {
+                                cout << "Попытка передачи некорректного пакета (команда содержит не все аргументы)" << endl;
+                                state = State::idle;
+                                break;
+                            }
                             try {
                                 checksumCorrect += charToInt(ch, false);
                                 if (checksumCorrect == checksum) {
                                     cout << "Пакет считан успешно" << endl;
+                                    cout << "Size: " << len << "\nData: ";
+                                    for (int i = 0; i < len; i++) {
+                                        cout << data[i] << " ";
+                                    }
+                                    cout << endl;
                                     output.push('+');
                                 } else {
                                     cout << "Попытка передачи некорректной контрольной суммы" << endl;
@@ -124,17 +157,20 @@ class PacketReader {
             }
         }
     }
+
     PacketReader()
-        : state(State::idle), index(0), len(0), command(Command::sleep), checksum(0), checksumCorrect(0) {}
+        : state(State::idle), index(0), len(0), command(Command::sleep), checksum(0), checksumCorrect(0), isArrEmpty(true) {}
 
    private:
     State state;
     size_t index;
     uint16_t len;
-    uint8_t data[Size / 8];
+    uint16_t data[Size / 8];
     Command command;
     uint8_t checksum;
     uint8_t checksumCorrect;
+    bool isArrEmpty;
+
     bool isCommandCorrect(uint8_t ch) {
         switch (static_cast<Command>(ch)) {
             case Command::TMS:
@@ -146,6 +182,22 @@ class PacketReader {
                 return true;
         }
         return false;
+    }
+
+    int commandArgsCount(PacketReader<Size>::Command cmd) {
+        switch(cmd) {
+            case Command::TMS:
+            case Command::scanDr:
+            case Command::scanIr:
+                return 2;
+            case Command::stableClocks:
+            case Command::sleep:
+                return 1;
+            case Command::tlrReset:
+                return 0;
+        }
+
+        return 0;
     }
 };
 
@@ -170,13 +222,12 @@ int main(int argc, const char *argv[]) {
 }
 
 int charToInt(char ch, bool x16) {
-    ch = tolower(ch);
     if (ch >= '0' && ch <= '9') {
         return (ch - '0') * (x16 ? 16 : 1);
     } else if (ch >= 'a' && ch <= 'f') {
-        return (ch - 'f') * (x16 ? 16 : 1);
+        return (ch - 'W') * (x16 ? 16 : 1);
     } else if (ch >= 'A' && ch <= 'F') {
-        return (ch - 'A') * (x16 ? 16 : 1);
+        return (ch - '7') * (x16 ? 16 : 1);
     } else
         throw std::bad_exception();
 }
