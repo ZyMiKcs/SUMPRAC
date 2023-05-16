@@ -2,6 +2,7 @@
 #include <iomanip>
 #include <iostream>
 #include <queue>
+#include <fstream>
 
 #include "fifo.h"
 
@@ -31,6 +32,8 @@ class PacketReader {
                     checksum = 0;
                     state = State::command;
                     index = 0;
+                    len = 0;
+                    checksumCorrect = 0;
                     break;
                 case '#':
                     switch (state) {
@@ -55,6 +58,7 @@ class PacketReader {
                             state = State::dataL;
                         } else {
                             cout << "Попытка передачи некорректного пакета" << endl;
+                            output.push('-');
                             state = State::idle;
                         }
                     }
@@ -79,6 +83,7 @@ class PacketReader {
                                 len = len * 16 + charToInt(ch, false);
                             } catch (bad_exception &e) {
                                 cout << "Попытка передачи некорректного размера" << endl;
+                                output.push('-');
                                 state = State::idle;
                             }
                             break;
@@ -88,6 +93,7 @@ class PacketReader {
                                 state = State::dataH;
                             } catch (bad_exception &e) {
                                 cout << "Попытка передачи некорректных данных" << endl;
+                                output.push('-');
                                 state = State::idle;
                             }
                             break;
@@ -99,6 +105,7 @@ class PacketReader {
                                 index++;
                             } catch (bad_exception &e) {
                                 cout << "Попытка передачи некорректных данных" << endl;
+                                output.push('-');
                                 state = State::idle;
                             }
                             break;
@@ -108,47 +115,42 @@ class PacketReader {
                                 state = State::checksum2;
                             } catch (bad_exception &e) {
                                 cout << "Попытка передачи некорректной контрольной суммы" << endl;
+                                output.push('-');
                                 state = State::idle;
                             }
                             break;
                         case State::checksum2:
-                            // if (len != index) {
-                            //     cout << "Попытка передачи некорректного пакета" << endl;
-                            //     state = State::idle;
-                            //     break;
-                            // }
-                            // char ch = '1';
                             if (commandArgsCount(command) == 0 && len != 0) {
                                 cout << "Попытка передачи некорректного пакета (команда не должна иметь аргументы)" << endl;
+                                output.push('-');
                                 state = State::idle;
                                 break;
                             }
                             if (commandArgsCount(command) == 1 && !isArrEmpty) {
                                 cout << "Попытка передачи некорректного пакета (команда должна иметь один аргумент)" << endl;
+                                output.push('-');
                                 state = State::idle;
                                 break;
                             }
                             if (commandArgsCount(command) == 2 && (len == 0 || isArrEmpty)) {
                                 cout << "Попытка передачи некорректного пакета (команда содержит не все аргументы)" << endl;
+                                output.push('-');
                                 state = State::idle;
                                 break;
                             }
                             try {
                                 checksumCorrect += charToInt(ch, false);
                                 if (checksumCorrect == checksum) {
-                                    cout << "Пакет считан успешно" << endl;
-                                    cout << "Size: " << len << "\nData: ";
-                                    for (int i = 0; i < len; i++) {
-                                        cout << data[i] << " ";
-                                    }
-                                    cout << endl;
+                                    startCommand(command, len, data);
                                     output.push('+');
                                 } else {
-                                    cout << "Попытка передачи некорректной контрольной суммы" << endl;
+                                    cout << "Попытка передачи некорректной контрольной суммы " << hex << static_cast<int>(checksum) << endl;
+                                    output.push('-');
                                 }
                                 state = State::idle;
                             } catch (bad_exception &e) {
                                 cout << "Попытка передачи некорректной контрольной суммы" << endl;
+                                output.push('-');
                                 state = State::idle;
                             }
                             break;
@@ -165,7 +167,7 @@ class PacketReader {
     State state;
     size_t index;
     uint16_t len;
-    uint16_t data[Size / 8];
+    uint8_t data[Size / 8];
     Command command;
     uint8_t checksum;
     uint8_t checksumCorrect;
@@ -199,9 +201,49 @@ class PacketReader {
 
         return 0;
     }
+    
+    void getCommandName(PacketReader<Size>::Command cmd, ofstream& outputFile) {
+        switch(cmd) {
+            case Command::TMS:
+                outputFile << "TMS";
+                break;
+            case Command::scanDr:
+                outputFile << "DR_SCAN";
+                break;
+            case Command::scanIr:
+                outputFile << "IR_SCAN";
+                break;
+            case Command::stableClocks:
+                outputFile << "STABLE_CLOCKS";
+                break;
+            case Command::sleep:
+                outputFile << "SLEEP";
+                break;
+            case Command::tlrReset:
+                outputFile << "TLR_RESET";
+                break;
+        }
+    }
+
+    void startCommand(PacketReader<Size>::Command cmd, uint16_t size, uint8_t *data) {
+        ofstream outputFile;
+        outputFile.open("output", ios::app);
+        getCommandName(cmd, outputFile);
+        outputFile << "," << size << ",";
+
+        for (int i = 0; i < size; i++) {
+            outputFile << std::hex << static_cast<int>((data[i/8]>>(i%8))&1);
+        }
+        outputFile << endl;
+        outputFile.close();
+    }
 };
 
+
 int main(int argc, const char *argv[]) {
+    ofstream outputFile;
+    outputFile.open("output");
+    outputFile.close();
     constexpr std::uint8_t len = 128;
     using fifo::Fifo;
     using DataType = uint8_t;
@@ -225,9 +267,9 @@ int charToInt(char ch, bool x16) {
     if (ch >= '0' && ch <= '9') {
         return (ch - '0') * (x16 ? 16 : 1);
     } else if (ch >= 'a' && ch <= 'f') {
-        return (ch - 'W') * (x16 ? 16 : 1);
+        return (ch - 'a' + 10) * (x16 ? 16 : 1);
     } else if (ch >= 'A' && ch <= 'F') {
-        return (ch - '7') * (x16 ? 16 : 1);
+        return (ch - 'A' + 10) * (x16 ? 16 : 1);
     } else
         throw std::bad_exception();
 }
