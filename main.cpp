@@ -1,7 +1,6 @@
 #include <cctype>
 #include <iomanip>
 #include <iostream>
-#include <queue>
 #include <fstream>
 
 #include "fifo.h"
@@ -241,8 +240,8 @@ class PacketReader {
 
 
 int main(int argc, const char *argv[]) {
-    ofstream outputFile;
-    outputFile.open("output");
+    fstream outputFile;
+    outputFile.open("output", ios::out);
     outputFile.close();
     constexpr std::uint8_t len = 128;
     using fifo::Fifo;
