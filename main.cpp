@@ -5,6 +5,7 @@
 
 #include "fifo.h"
 
+// hello
 using namespace std;
 
 int charToInt(char ch, bool x16);  // Перевод шестнадцатеричного числа, записанного в char, в int
